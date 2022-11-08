@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cerita Dicoding</string>
+    <string name="req_password">Panjang Kata Sandi minimal %1$s karakter</string>
+    <string name="image_splash">Logo Dicoding</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="login">Masuk</string>
+    <string name="register">Daftar</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="req_field">Tidak boleh kosong!</string>
+    <string name="invalid_email">Email Anda tidak valid!</string>
+    <string name="or">Atau</string>
+    <string name="setting">Pengaturan Bahasa</string>
+    <string name="please_wait">Mohon menunggu</string>
+    <string name="logout">Keluar</string>
+    <string name="email_password">Email atau kata sandi salah</string>
+    <string name="email_already_taken">Email sudah digunakan</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="success">success</string>
+    <string name="bad_req">Bad Request</string>
+    <string name="user_created">User created</string>
+    <string name="photo_story">Foto Cerita</string>
+    <string name="detail_story">Detail Cerita</string>
+    <string name="upload_story">Unggah Cerita</string>
+    <string name="home">Beranda</string>
+    <string name="permission">Izin tidak diberikan</string>
+    <string name="auth">com.teblung.dicodingstory</string>
+    <string name="select_image">Pilih Gambar</string>
+    <string name="enter_picture">Silahkan masukkan gambar</string>
+    <string name="add">Tambah</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+    <string name="maps">Peta</string>
+    <string name="my_point">Saya Disini</string>
+</resources>

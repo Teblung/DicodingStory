@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.upload.UploadActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgPreviewStory"
+            android:layout_width="wrap_content"
+            android:layout_height="400dp"
+            android:contentDescription="@string/photo_story"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/btnOpenCamera"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_dicoding" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenCamera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/btnOpenGallery"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgPreviewStory"
+            tools:text="Camera" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenGallery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnOpenCamera"
+            app:layout_constraintTop_toBottomOf="@id/imgPreviewStory"
+            tools:text="Gallery" />
+
+        <EditText
+            android:id="@+id/edDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="@id/btnOpenGallery"
+            app:layout_constraintStart_toStartOf="@id/btnOpenCamera"
+            app:layout_constraintTop_toBottomOf="@id/btnOpenCamera"
+            tools:text="Description" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUploadStory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginVertical="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edDesc"
+            tools:text="Upload" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/btnUploadStory"
+            app:layout_constraintStart_toStartOf="@id/btnUploadStory"
+            app:layout_constraintTop_toBottomOf="@id/btnUploadStory" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
