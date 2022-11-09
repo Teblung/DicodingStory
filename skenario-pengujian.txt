@@ -1,0 +1,19 @@
+AuthVMTest
+1. Register Works
+	- Memastikan view model register bisa bekerja dengan benar
+2. Login Works
+	- Memastikan view model login bisa bekerja dengan benar
+
+MainVMTest
+1. Get stories not null
+	- Memastikan view model stories tidak mendapatkan nilai null
+
+UploadVMTest
+1. Upload story without location success
+	- Memastikan view model upload tanpa lokasi bisa bekerja dengan benar
+2. Upload story with location success
+	- Memastikan view model upload dengan lokasi bisa bekerja dengan benar
+
+MapsVMTest
+1. Get Story With Location
+	- Memastikan view model getStoryWithLocation bisa bekerja dengan benar
