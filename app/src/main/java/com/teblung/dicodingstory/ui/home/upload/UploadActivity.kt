@@ -95,6 +95,18 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
+    private fun showMessage(message: String) {
+        when (message) {
+            getString(R.string.success_upload) -> {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            else -> {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun showLoading(isLoading: Boolean) {
         binding.apply {
             btnOpenCamera.isEnabled = !isLoading
@@ -139,6 +151,9 @@ class UploadActivity : AppCompatActivity() {
         uploadVM.apply {
             loading.observe(this@UploadActivity) {
                 showLoading(it)
+            }
+            message.observe(this@UploadActivity) {
+                showMessage(it)
             }
             if (getFile != null) {
                 descriptionText = binding.edDesc.text.toString()
