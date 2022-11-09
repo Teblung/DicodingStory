@@ -34,9 +34,11 @@ import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.LATITUD
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.LONGITUDE_POINT
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.MY_LOCATION_TO_SHARE
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.UPLOAD_REQUEST
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.util.*
 
+@AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val binding: ActivityMapsBinding by lazy {

@@ -20,8 +20,10 @@ import com.teblung.dicodingstory.data.source.local.preference.SessionUser
 import com.teblung.dicodingstory.databinding.ActivityUploadBinding
 import com.teblung.dicodingstory.utils.Utils
 import com.teblung.dicodingstory.utils.Utils.reduceFileImage
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
+@AndroidEntryPoint
 class UploadActivity : AppCompatActivity() {
 
     private val binding: ActivityUploadBinding by lazy {

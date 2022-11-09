@@ -12,7 +12,9 @@ import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
 import com.teblung.dicodingstory.databinding.ActivitySplashBinding
 import com.teblung.dicodingstory.ui.auth.login.LoginActivity
 import com.teblung.dicodingstory.ui.home.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private val binding: ActivitySplashBinding by lazy {

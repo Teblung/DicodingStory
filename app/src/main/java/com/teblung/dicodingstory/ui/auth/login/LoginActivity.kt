@@ -18,7 +18,9 @@ import com.teblung.dicodingstory.ui.auth.AuthVM
 import com.teblung.dicodingstory.ui.auth.register.RegisterActivity
 import com.teblung.dicodingstory.ui.custom.InputView
 import com.teblung.dicodingstory.ui.home.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private val binding: ActivityLoginBinding by lazy {

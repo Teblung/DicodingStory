@@ -11,7 +11,9 @@ import com.teblung.dicodingstory.R
 import com.teblung.dicodingstory.databinding.ActivityRegisterBinding
 import com.teblung.dicodingstory.ui.auth.AuthVM
 import com.teblung.dicodingstory.ui.custom.InputView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
     private val binding: ActivityRegisterBinding by lazy {

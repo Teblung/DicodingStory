@@ -16,7 +16,9 @@ import com.teblung.dicodingstory.ui.auth.login.LoginActivity
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity
 import com.teblung.dicodingstory.ui.loading.LoadingAdapter
 import com.teblung.dicodingstory.ui.maps.MapsActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy {
