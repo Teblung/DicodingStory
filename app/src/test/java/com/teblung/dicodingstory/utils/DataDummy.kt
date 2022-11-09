@@ -4,7 +4,7 @@ import com.teblung.dicodingstory.data.source.remote.response.StoryResponse
 
 object DataDummy {
     fun generateDummyStory(): List<StoryResponse> {
-        val newsList : MutableList<StoryResponse> = arrayListOf()
+        val newsList: MutableList<StoryResponse> = arrayListOf()
         for (i in 0..8) {
             val news = StoryResponse(
                 "2022-11-09T07:00:34.928Z",

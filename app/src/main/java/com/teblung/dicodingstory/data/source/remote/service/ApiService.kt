@@ -35,7 +35,7 @@ interface ApiService {
     @GET("stories")
     fun getAllStoryWithLocation(
         @Header("Authorization") auth: String,
-        @Query("location")location: Int
+        @Query("location") location: Int
     ): Call<StoryListResponse>
 
     @Multipart
@@ -52,7 +52,7 @@ interface ApiService {
         @Header("Authorization") auth: String,
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,
-        @Part("lat")latitude: Float,
-        @Part("lon")longitude: Float
+        @Part("lat") latitude: Float,
+        @Part("lon") longitude: Float
     ): Call<AddStoryResponse>
 }

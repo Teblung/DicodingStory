@@ -10,14 +10,14 @@
         android:id="@+id/tvMaps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:padding="12dp"
         android:gravity="center"
-        tools:text="Maps"
+        android:padding="12dp"
+        android:textSize="24sp"
+        app:drawableStartCompat="@drawable/ic_twotone_map_24"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:drawableStartCompat="@drawable/ic_twotone_map_24" />
+        tools:text="Maps" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStory"
@@ -33,13 +33,13 @@
         android:id="@+id/tvWarning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="No Data"
-        android:textSize="24sp"
         android:gravity="center"
+        android:textSize="24sp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:text="No Data" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

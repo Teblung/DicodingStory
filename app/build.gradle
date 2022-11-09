@@ -21,7 +21,7 @@ android {
     }
 
     buildTypes {
-        debug{
+        debug {
             buildConfigField "String", "BASE_URL", '"https://story-api.dicoding.dev/v1/"'
             buildConfigField "String", "PREF_NAME_KEY", '"USER_LOGIN"'
         }
@@ -79,7 +79,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:3.12.4'
 
     testImplementation "androidx.arch.core:core-testing:2.1.0" // InstantTaskExecutorRule
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4" //TestCoroutineDispatcher
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    //TestCoroutineDispatcher
     testImplementation 'org.mockito:mockito-core:3.12.4'
     testImplementation 'org.mockito:mockito-inline:3.12.4'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
@@ -89,7 +90,8 @@ dependencies {
     //androidTestImplementation
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0" // InstantTaskExecutorRule
     androidTestImplementation "com.google.truth:truth:1.0.1"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4" //TestCoroutineDispatcher
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    //TestCoroutineDispatcher
     androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
     androidTestImplementation("io.strikt:strikt-core:0.31.0")
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'//RecyclerViewActions

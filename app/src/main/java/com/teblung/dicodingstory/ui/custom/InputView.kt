@@ -140,7 +140,7 @@ class InputView : ConstraintLayout {
         return binding.tiedInputView.text.toString().trim()
     }
 
-    fun getLength() : Int {
+    fun getLength(): Int {
         return binding.tiedInputView.length()
     }
 
