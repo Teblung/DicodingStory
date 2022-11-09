@@ -36,4 +36,5 @@
     <string name="my_point">Saya Disini</string>
     <string name="marker_load_failed">Pemuatan penanda gagal</string>
     <string name="no_data">Tidak ada data</string>
+    <string name="success_upload">Story created successfully</string>
 </resources>
