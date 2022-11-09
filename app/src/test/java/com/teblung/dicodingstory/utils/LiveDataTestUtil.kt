@@ -35,13 +35,3 @@ fun <T> LiveData<T>.getOrAwaitValue(
     return data as T
 }
 
-//observe Livedata sampai block selesai dieksekusi
-suspend fun <T> LiveData<T>.observeForTesting(block: suspend () -> Unit) {
-    val observer = Observer<T> { }
-    try {
-        observeForever(observer)
-        block()
-    } finally {
-        removeObserver(observer)
-    }
-}

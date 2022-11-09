@@ -52,6 +52,5 @@ class SessionUser @Inject constructor(@ApplicationContext val context: Context) 
         private val TOKEN_KEY = stringPreferencesKey("TOKEN")
         private val USER_ID_KEY = stringPreferencesKey("USER_ID")
         private val STATE_KEY = booleanPreferencesKey("STATE")
-        private val TAG: String = SessionUser::class.java.simpleName
     }
 }

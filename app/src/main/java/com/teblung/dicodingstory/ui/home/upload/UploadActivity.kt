@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.teblung.dicodingstory.R
 import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
-import com.teblung.dicodingstory.data.source.local.preference.SessionUser
 import com.teblung.dicodingstory.databinding.ActivityUploadBinding
 import com.teblung.dicodingstory.utils.Utils
 import com.teblung.dicodingstory.utils.Utils.reduceFileImage
@@ -32,7 +31,6 @@ class UploadActivity : AppCompatActivity() {
     private val uploadVM by viewModels<UploadVM>()
     private val dataStoreVM by viewModels<DataStoreVM>()
 
-    private lateinit var preferences: SessionUser
     private lateinit var path: String
     private var descriptionText: String = ""
     private var latitude: Double = 0.0
