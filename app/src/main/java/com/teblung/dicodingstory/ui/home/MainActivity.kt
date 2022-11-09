@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+            adapterStory.refresh()
         }
     }
 
