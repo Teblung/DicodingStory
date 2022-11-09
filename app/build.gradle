@@ -1,14 +1,14 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'dagger.hilt.android.plugin'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'kotlin-kapt'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.teblung.dicodingstory"
@@ -69,8 +69,8 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.41"
 
     //Room
-    implementation 'androidx.room:room-ktx:2.4.0-beta02'
-    kapt 'androidx.room:room-compiler:2.4.0-beta02'
+    implementation 'androidx.room:room-ktx:2.4.3'
+    kapt 'androidx.room:room-compiler:2.4.3'
     implementation "androidx.activity:activity-ktx:1.5.1"
 
     // Test dependencies
@@ -112,7 +112,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.5.1"
 
     //paging
-    implementation "androidx.paging:paging-runtime-ktx:3.1.0"
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
     implementation "androidx.room:room-paging:2.4.3"
 
     //retrofit
