@@ -45,9 +45,11 @@ class Repository @Inject constructor(
                         call: Call<UserRegisterResponse>,
                         response: Response<UserRegisterResponse>
                     ) {
-                        if (response.isSuccessful) {
+                        _isLoading.value = false
+                        if (!response.isSuccessful) {
                             _message.value = response.message()
-                            _isLoading.value = false
+                        } else {
+                            _message.value = response.body()?.message
                         }
                     }
 
@@ -68,13 +70,13 @@ class Repository @Inject constructor(
                         call: Call<UserLoginResponse>,
                         response: Response<UserLoginResponse>
                     ) {
-                        if (response.isSuccessful) {
-                            _message.value = response.body()?.message
-                            _userLogin.value = response.body()?.loginResult
-                        } else {
-                            _message.value = response.message()
-                        }
                         _isLoading.value = false
+                        if (!response.isSuccessful) {
+                            _message.value = response.message()
+                        } else {
+                            _userLogin.value = response.body()?.loginResult
+                            _message.value = response.body()?.message
+                        }
                     }
 
                     override fun onFailure(call: Call<UserLoginResponse>, t: Throwable) {
@@ -89,7 +91,7 @@ class Repository @Inject constructor(
     fun getAllStory(): LiveData<PagingData<StoryResponse>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 5
+                pageSize = 4
             ),
             remoteMediator = RemoteMediator(database, apiService, preference),
             pagingSourceFactory = {
@@ -114,14 +116,16 @@ class Repository @Inject constructor(
                     call: Call<AddStoryResponse>,
                     response: Response<AddStoryResponse>
                 ) {
-                    if (response.isSuccessful) {
+                    _isLoading.value = false
+                    if (!response.isSuccessful) {
+                        _message.value = response.message()
+                    } else {
                         val responseBody = response.body()
                         if (responseBody != null && !responseBody.error) {
                             _message.value = responseBody.message
                         } else {
                             _message.value = response.message()
                         }
-                        _isLoading.value = false
                     }
                 }
 
@@ -142,13 +146,14 @@ class Repository @Inject constructor(
                         call: Call<StoryListResponse?>,
                         response: Response<StoryListResponse?>
                     ) {
-                        if (response.isSuccessful) {
+                        _isLoading.value = false
+                        if (!response.isSuccessful) {
+                            _message.postValue(response.message())
+                        } else {
                             _storyList.postValue(response.body()?.listStory)
                             _message.postValue(response.body()?.message)
-                        } else {
-                            _message.postValue(response.message())
                         }
-                        _isLoading.value = false
+
                     }
 
                     override fun onFailure(call: Call<StoryListResponse?>, t: Throwable) {
@@ -185,14 +190,16 @@ class Repository @Inject constructor(
                 call: Call<AddStoryResponse>,
                 response: Response<AddStoryResponse>
             ) {
-                if (response.isSuccessful) {
+                _isLoading.value = false
+                if (!response.isSuccessful) {
+                    _message.value = response.message()
+                } else {
                     val responseBody = response.body()
                     if (responseBody != null && !responseBody.error) {
                         _message.value = responseBody.message
                     } else {
                         _message.value = response.message()
                     }
-                    _isLoading.value = false
                 }
             }
 
