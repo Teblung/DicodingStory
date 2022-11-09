@@ -3,7 +3,7 @@ package com.teblung.dicodingstory.data.source.remote.response
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "story")
 data class StoryResponse(
     val createdAt: String,
     val description: String,
