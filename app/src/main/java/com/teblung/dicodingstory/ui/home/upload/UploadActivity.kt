@@ -10,25 +10,16 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.teblung.dicodingstory.R
+import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
 import com.teblung.dicodingstory.data.source.local.preference.SessionUser
-import com.teblung.dicodingstory.data.source.remote.response.AddStoryResponse
-import com.teblung.dicodingstory.data.source.remote.service.GetRetrofitInstance
 import com.teblung.dicodingstory.databinding.ActivityUploadBinding
 import com.teblung.dicodingstory.utils.Utils
 import com.teblung.dicodingstory.utils.Utils.reduceFileImage
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 class UploadActivity : AppCompatActivity() {
@@ -36,6 +27,8 @@ class UploadActivity : AppCompatActivity() {
     private val binding: ActivityUploadBinding by lazy {
         ActivityUploadBinding.inflate(layoutInflater)
     }
+    private val uploadVM by viewModels<UploadVM>()
+    private val dataStoreVM by viewModels<DataStoreVM>()
 
     private lateinit var preferences: SessionUser
     private lateinit var path: String
@@ -73,7 +66,6 @@ class UploadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupPref()
         setupBundle()
         setupUI()
     }
@@ -110,10 +102,6 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupPref() {
-        preferences = SessionUser(this)
-    }
-
     private fun allPermissionGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -146,128 +134,40 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun uploadStory() {
-        if (getFile != null) {
-            descriptionText = binding.edDesc.text.toString()
-            if (descriptionText.isEmpty()) {
-                binding.edDesc.error = resources.getString(R.string.req_field)
-            } else {
-                showLoading(true)
-                val file = reduceFileImage(getFile as File)
-                val description = descriptionText.toRequestBody("text/plain".toMediaType())
-                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "photo",
-                    file.name,
-                    requestImageFile
-                )
-
-                val token = "Bearer ${preferences.getLoginData().token}"
-                if (latitude == 0.0 && longitude == 0.0) {
-                    uploadWithoutLocation(token, imageMultipart, description)
-                } else {
-                    uploadWithLocation(token, imageMultipart, description, latitude, longitude)
-                }
+        uploadVM.apply {
+            loading.observe(this@UploadActivity) {
+                showLoading(it)
             }
-        } else {
-            Toast.makeText(
-                this@UploadActivity,
-                getString(R.string.enter_picture),
-                Toast.LENGTH_SHORT
-            ).show()
-            showLoading(false)
+            if (getFile != null) {
+                descriptionText = binding.edDesc.text.toString()
+                if (descriptionText.isEmpty()) {
+                    binding.edDesc.error = resources.getString(R.string.req_field)
+                } else {
+                    val file = reduceFileImage(getFile as File)
+                    dataStoreVM.apply {
+                        getLoginSession().observe(this@UploadActivity) {
+                            if (latitude == 0.0 && longitude == 0.0) {
+                                uploadWithoutLocation("Bearer ${it.token}", file, descriptionText)
+                            } else {
+                                uploadWithLocation(
+                                    "Bearer ${it.token}",
+                                    file,
+                                    descriptionText,
+                                    latitude,
+                                    longitude
+                                )
+                            }
+                        }
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    this@UploadActivity,
+                    getString(R.string.enter_picture),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
-
-    private fun uploadWithLocation(
-        token: String,
-        imageMultipart: MultipartBody.Part,
-        description: RequestBody,
-        latitude: Double,
-        longitude: Double
-    ) {
-        GetRetrofitInstance.getApiService().uploadStoryWithLocation(
-            token,
-            imageMultipart,
-            description,
-            latitude.toFloat(),
-            longitude.toFloat()
-        )
-            .enqueue(object : Callback<AddStoryResponse?> {
-                override fun onResponse(
-                    call: Call<AddStoryResponse?>,
-                    response: Response<AddStoryResponse?>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null && !responseBody.error) {
-                            Toast.makeText(
-                                this@UploadActivity,
-                                responseBody.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@UploadActivity,
-                                response.message(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                    showLoading(false)
-                }
-
-                override fun onFailure(call: Call<AddStoryResponse?>, t: Throwable) {
-                    Toast.makeText(
-                        this@UploadActivity,
-                        t.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    showLoading(false)
-                }
-            })
-    }
-
-    private fun uploadWithoutLocation(
-        token: String,
-        imageMultipart: MultipartBody.Part,
-        description: RequestBody
-    ) {
-        GetRetrofitInstance.getApiService().uploadStory(token, imageMultipart, description)
-            .enqueue(object : Callback<AddStoryResponse?> {
-                override fun onResponse(
-                    call: Call<AddStoryResponse?>,
-                    response: Response<AddStoryResponse?>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null && !responseBody.error) {
-                            Toast.makeText(
-                                this@UploadActivity,
-                                responseBody.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@UploadActivity,
-                                response.message(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                    showLoading(false)
-                }
-
-                override fun onFailure(call: Call<AddStoryResponse?>, t: Throwable) {
-                    Toast.makeText(
-                        this@UploadActivity,
-                        t.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    showLoading(false)
-                }
-            })
     }
 
     override fun onRequestPermissionsResult(

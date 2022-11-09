@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.animation.AnimationUtils
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.teblung.dicodingstory.R
-import com.teblung.dicodingstory.data.source.local.preference.SessionUser
+import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
 import com.teblung.dicodingstory.databinding.ActivitySplashBinding
+import com.teblung.dicodingstory.ui.auth.login.LoginActivity
 import com.teblung.dicodingstory.ui.home.MainActivity
-import com.teblung.dicodingstory.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -19,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
     }
     private val twoSecond: Long = 4000
 
-    private lateinit var preferences: SessionUser
+    private val dataStoreVM by viewModels<DataStoreVM>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,13 +41,14 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkSession() {
-        preferences = SessionUser(this)
-        if (preferences.getLoginData().isLogin) {
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-            finish()
-        } else {
-            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-            finish()
+        dataStoreVM.getLoginSession().observe(this) {
+            if (it.isLogin) {
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
+            } else {
+                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                finish()
+            }
         }
     }
 }

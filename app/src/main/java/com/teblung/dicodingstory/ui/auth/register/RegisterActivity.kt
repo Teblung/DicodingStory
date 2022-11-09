@@ -1,15 +1,15 @@
-package com.teblung.dicodingstory.ui.register
+package com.teblung.dicodingstory.ui.auth.register
 
 import android.os.Bundle
 import android.transition.Slide
 import android.view.View
 import android.view.Window
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.teblung.dicodingstory.R
-import com.teblung.dicodingstory.data.source.local.preference.SessionUser
 import com.teblung.dicodingstory.databinding.ActivityRegisterBinding
+import com.teblung.dicodingstory.ui.auth.AuthVM
 import com.teblung.dicodingstory.ui.custom.InputView
 
 class RegisterActivity : AppCompatActivity() {
@@ -17,10 +17,7 @@ class RegisterActivity : AppCompatActivity() {
     private val binding: ActivityRegisterBinding by lazy {
         ActivityRegisterBinding.inflate(layoutInflater)
     }
-
-    private lateinit var preferences: SessionUser
-    private lateinit var viewModel: RegisterViewModel
-
+    private val authVM by viewModels<AuthVM>()
     private val character: Int = 6
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +27,6 @@ class RegisterActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupViewModel()
-        setupPref()
         setupUI()
     }
 
@@ -90,32 +85,35 @@ class RegisterActivity : AppCompatActivity() {
                     ivEmail.setRequireField(resources.getString(R.string.invalid_email))
                 }
                 ivPassword.getLength() < character -> {
-                    ivPassword.setRequireField(resources.getString(
-                        R.string.req_password,
-                        character.toString()))
+                    ivPassword.setRequireField(
+                        resources.getString(
+                            R.string.req_password,
+                            character.toString()
+                        )
+                    )
                 }
                 ivUsername.isValid() && ivEmail.isValid() && ivPassword.isValid() -> {
                     showMessage(getString(R.string.please_wait))
-                    viewModel.register(
-                        name = ivUsername.getText(),
-                        email = ivEmail.getText(),
-                        password = ivPassword.getText()
-                    )
+                    setupAuth()
                 }
             }
         }
     }
 
-    private fun setupPref() {
-        preferences = SessionUser(this)
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
-        viewModel.apply {
-            isLoading.observe(this@RegisterActivity) { showLoading(it) }
-            message.observe(this@RegisterActivity) {
-                showMessage(it)
+    private fun setupAuth() {
+        binding.apply {
+            authVM.apply {
+                loading.observe(this@RegisterActivity) {
+                    showLoading(it)
+                }
+                message.observe(this@RegisterActivity) {
+                    showMessage(it)
+                }
+                register(
+                    name = ivUsername.getText(),
+                    email = ivEmail.getText(),
+                    password = ivPassword.getText()
+                )
             }
         }
     }

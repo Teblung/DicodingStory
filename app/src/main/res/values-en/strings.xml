@@ -34,4 +34,6 @@
     <string name="upload">Upload</string>
     <string name="maps">Map</string>
     <string name="my_point">I am Here</string>
+    <string name="marker_load_failed">Marker load failed</string>
+    <string name="no_data">No Data</string>
 </resources>

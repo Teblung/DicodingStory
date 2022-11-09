@@ -13,9 +13,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -27,9 +27,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.teblung.dicodingstory.R
-import com.teblung.dicodingstory.data.source.local.preference.SessionUser
+import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
 import com.teblung.dicodingstory.databinding.ActivityMapsBinding
-import com.teblung.dicodingstory.ui.home.MainViewModel
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.LATITUDE_POINT
 import com.teblung.dicodingstory.ui.home.upload.UploadActivity.Companion.LONGITUDE_POINT
@@ -50,22 +49,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         ) { permissions ->
             when {
                 permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
-                    // Precise location access granted.
                     getMyLastLocation()
                 }
                 permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
-                    // Only approximate location access granted.
                     getMyLastLocation()
                 }
-                else -> {
-                    // No location access granted.
-                }
+                else -> {}
             }
         }
 
+    private val mapsVM by viewModels<MapsVM>()
+    private val dataStoreVM by viewModels<DataStoreVM>()
+
     private lateinit var mMap: GoogleMap
-    private lateinit var preferences: SessionUser
-    private lateinit var viewModel: MainViewModel
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var latitude: Double = 0.0
@@ -76,49 +72,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupPref()
-        setupViewModel()
         setupUI()
     }
 
     private fun setupUI() {
         supportActionBar?.title = getString(R.string.maps)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    private fun setupPref() {
-        preferences = SessionUser(this)
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add controller
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isIndoorLevelPickerEnabled = true
         mMap.uiSettings.isCompassEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = true
-
-        // Add a marker in Indonesian and move the camera
-        /*val indonesian = LatLng(-2.548926, 118.0148634)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(indonesian, 3f))*/
 
         getMyLastLocation()
         setMapStyle()
@@ -192,11 +163,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val startLocation = LatLng(location.latitude, location.longitude)
         latitude = location.latitude
         longitude = location.longitude
-        /*mMap.addMarker(
-            MarkerOptions()
-                .position(startLocation)
-                .title(getString(R.string.my_point))
-        )*/
         mMap.animateCamera(CameraUpdateFactory.newLatLng(startLocation))
     }
 
@@ -251,15 +217,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        viewModel.apply {
-            getAllStoryWithLocation(preferences.getLoginData().token)
-            listStoryData.observe(this@MapsActivity) {
-                for (i in it) {
-                    val latLng = LatLng(i.lat, i.lon)
-                    if (latLng.latitude != 0.0 && latLng.longitude != 0.0) {
-                        mMap.addMarker(
-                            MarkerOptions().position(latLng).title(i.name).snippet(i.description)
-                        )
+        dataStoreVM.apply {
+            getLoginSession().observe(this@MapsActivity) {
+                mapsVM.apply {
+                    getStoryWithLocation(it.token)
+                    listStoryData.observe(this@MapsActivity) {
+                        for (i in it) {
+                            val latLng = LatLng(i.lat, i.lon)
+                            if (latLng.latitude != 0.0 && latLng.longitude != 0.0) {
+                                mMap.addMarker(
+                                    MarkerOptions().position(latLng).title(i.name)
+                                        .snippet(i.description)
+                                )
+                            }
+                        }
                     }
                 }
             }

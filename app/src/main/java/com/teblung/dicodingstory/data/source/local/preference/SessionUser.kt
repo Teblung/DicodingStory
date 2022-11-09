@@ -1,51 +1,57 @@
 package com.teblung.dicodingstory.data.source.local.preference
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.teblung.dicodingstory.BuildConfig.PREF_NAME_KEY
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class SessionUser(context: Context) {
-    private val pref: SharedPreferences =
-        context.getSharedPreferences(PREF_NAME_KEY, Context.MODE_PRIVATE)
-    private val editor = pref.edit()
+val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = PREF_NAME_KEY)
 
-    fun setUserLogin(user: User) {
-        editor.apply {
-            putString(NAME_KEY, user.name)
-            putString(TOKEN_KEY, user.token)
-            putString(USER_ID_KEY, user.userId)
-            putBoolean(STATE_KEY, user.isLogin)
-            apply()
+class SessionUser @Inject constructor(@ApplicationContext val context: Context) {
+    private val dataStore = context.datastore
+
+    suspend fun setUserLogin(user: User) {
+        dataStore.edit {
+            it[NAME_KEY] = user.name
+            it[TOKEN_KEY] = user.token
+            it[USER_ID_KEY] = user.userId
+            it[STATE_KEY] = user.isLogin
         }
     }
 
-    fun setUserLogout() {
-        editor.apply {
-            remove(NAME_KEY)
-            remove(TOKEN_KEY)
-            remove(USER_ID_KEY)
-            putBoolean(STATE_KEY, false)
-            apply()
+    suspend fun setUserLogout() {
+        dataStore.edit {
+            it[NAME_KEY] = ""
+            it[TOKEN_KEY] = ""
+            it[USER_ID_KEY] = ""
+            it[STATE_KEY] = false
         }
     }
 
-    fun getLoginData(): User {
-        val userData = User(
-            pref.getString(NAME_KEY, "").toString(),
-            pref.getString(TOKEN_KEY, "").toString(),
-            pref.getString(USER_ID_KEY, "").toString(),
-            pref.getBoolean(STATE_KEY, false)
-        )
-        Log.d(TAG, "getLoginData: $userData")
-        return userData
+    fun getLoginData(): Flow<User> {
+        return dataStore.data.map {
+            User(
+                it[NAME_KEY].toString(),
+                it[TOKEN_KEY].toString(),
+                it[USER_ID_KEY].toString(),
+                it[STATE_KEY] ?: false
+            )
+        }
     }
 
     companion object {
-        private const val NAME_KEY = "NAME"
-        private const val TOKEN_KEY = "TOKEN"
-        private const val USER_ID_KEY = "USER_ID"
-        private const val STATE_KEY = "STATE"
+        private val NAME_KEY = stringPreferencesKey("NAME")
+        private val TOKEN_KEY = stringPreferencesKey("TOKEN")
+        private val USER_ID_KEY = stringPreferencesKey("USER_ID")
+        private val STATE_KEY = booleanPreferencesKey("STATE")
         private val TAG: String = SessionUser::class.java.simpleName
     }
 }

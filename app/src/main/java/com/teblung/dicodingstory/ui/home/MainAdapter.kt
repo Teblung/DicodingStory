@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,17 +16,7 @@ import com.teblung.dicodingstory.data.source.remote.response.StoryResponse
 import com.teblung.dicodingstory.databinding.ItemStoryBinding
 import com.teblung.dicodingstory.ui.home.detail.DetailActivity
 
-class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
-
-    private val listData = ArrayList<StoryResponse>()
-
-    fun setStoryData(data: ArrayList<StoryResponse>) {
-        val diffCallback = StoryCallback(listData, data)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        listData.clear()
-        listData.addAll(data)
-        diffResult.dispatchUpdatesTo(this)
-    }
+class MainAdapter : PagingDataAdapter<StoryResponse, MainAdapter.ViewHolder>(storyCallback) {
 
     inner class ViewHolder(private val binding: ItemStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -66,9 +57,23 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MainAdapter.ViewHolder, position: Int) {
-        holder.bind(listData[position])
+        getItem(position)?.let { holder.bind(it) }
     }
 
-    override fun getItemCount(): Int = listData.size
+    companion object {
+        val storyCallback = object : DiffUtil.ItemCallback<StoryResponse>() {
+            override fun areItemsTheSame(oldItem: StoryResponse, newItem: StoryResponse): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: StoryResponse,
+                newItem: StoryResponse
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+        }
+    }
 
 }
