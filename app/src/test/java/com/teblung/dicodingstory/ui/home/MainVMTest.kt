@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
 import com.google.common.truth.Truth.assertThat
+import com.teblung.dicodingstory.data.Repository
 import com.teblung.dicodingstory.data.source.remote.response.StoryResponse
 import com.teblung.dicodingstory.utils.DataDummy
 import com.teblung.dicodingstory.utils.MainCoroutineRule
@@ -30,20 +31,22 @@ class MainVMTest {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
-    @Mock
     private lateinit var mainVM: MainVM
+    @Mock
+    private lateinit var repository: Repository
 
     @Test
     fun `get stories not null`() = runTest {
         val dummyListStory = DataDummy.generateDummyStory()
-        val storiesData = PagedTestDataSources.itemSnapshot(dummyListStory)
 
+        val storiesData: PagingData<StoryResponse> = PagedTestDataSources.itemSnapshot(dummyListStory)
         val stories = MutableLiveData<PagingData<StoryResponse>>()
         stories.value = storiesData
+        `when`(repository.getAllStory()).thenReturn(stories)
 
+        mainVM = MainVM(repository)
         `when`(mainVM.stories).thenReturn(stories)
-
-        val actualData = mainVM.stories.getOrAwaitValue()
+        val actualData: PagingData<StoryResponse> = mainVM.stories.getOrAwaitValue()
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = MainAdapter.storyCallback,
@@ -56,10 +59,8 @@ class MainVMTest {
         advanceUntilIdle()
 
         verify(mainVM).stories
-
-        assertThat(actualData).isNotNull()
-
         assertThat(differ.snapshot()).isNotNull()
+        assertThat(actualData).isNotNull()
         assertThat(dummyListStory.size).isEqualTo(differ.snapshot().size)
         assertThat(dummyListStory[0].name).isEqualTo(differ.snapshot()[0]?.name)
     }
