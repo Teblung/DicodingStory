@@ -2,16 +2,16 @@ package com.teblung.dicodingstory.ui.auth
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.google.common.truth.Truth.assertThat
+import com.teblung.dicodingstory.data.Repository
 import com.teblung.dicodingstory.data.source.remote.response.UserLoginResult
 import com.teblung.dicodingstory.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
@@ -21,6 +21,7 @@ class AuthVMTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock
+    private lateinit var repository: Repository
     private lateinit var authVM: AuthVM
 
     @Test
@@ -32,15 +33,13 @@ class AuthVMTest {
         val expectedData = MutableLiveData<Boolean>()
         expectedData.value = true
 
-        authVM.register(dummyName, dummyEmail, dummyPassword)
-        verify(authVM).register(dummyName, dummyEmail, dummyPassword)
+        repository.registerUser(dummyName, dummyEmail, dummyPassword)
+        `when`(repository.isLoading).thenReturn(expectedData)
 
-        `when`(authVM.loading).thenReturn(expectedData)
-
+        authVM = AuthVM(repository)
         val actualData = authVM.loading.getOrAwaitValue()
 
-        verify(authVM).loading
-        assertThat(actualData).isEqualTo(expectedData.value)
+        Assert.assertEquals(actualData, expectedData.value)
     }
 
     @Test
@@ -52,14 +51,12 @@ class AuthVMTest {
         val expectedData = MutableLiveData<UserLoginResult>()
         expectedData.value = dummyLoginResult
 
-        authVM.login(dummyEmail, dummyPassword)
-        verify(authVM).login(dummyEmail, dummyPassword)
+        repository.loginUser(dummyEmail, dummyPassword)
+        `when`(repository.userLogin).thenReturn(expectedData)
 
-        `when`(authVM.userLogin).thenReturn(expectedData)
-
+        authVM = AuthVM(repository)
         val actualData = authVM.userLogin.getOrAwaitValue()
 
-        verify(authVM).userLogin
-        assertThat(actualData).isEqualTo(expectedData.value)
+        Assert.assertEquals(actualData, expectedData.value)
     }
 }
