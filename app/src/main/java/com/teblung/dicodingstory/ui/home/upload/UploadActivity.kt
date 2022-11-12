@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider
 import com.teblung.dicodingstory.R
 import com.teblung.dicodingstory.data.source.local.preference.DataStoreVM
 import com.teblung.dicodingstory.databinding.ActivityUploadBinding
+import com.teblung.dicodingstory.ui.home.MainActivity
 import com.teblung.dicodingstory.utils.Utils
 import com.teblung.dicodingstory.utils.Utils.reduceFileImage
 import dagger.hilt.android.AndroidEntryPoint
@@ -97,7 +98,9 @@ class UploadActivity : AppCompatActivity() {
         when (message) {
             getString(R.string.success_upload) -> {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                finish()
+                startActivity(Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                })
             }
             else -> {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
